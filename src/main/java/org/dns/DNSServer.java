@@ -175,7 +175,6 @@ public class DNSServer {
      * Open a socket to receive UDP packets and handle those packets
      */
     public void run() {
-        System.out.println("hi");
         pendingQueries = new HashMap<Integer, DNSMessage>();
         // open the socket, ensure it will close when the try block finishes
         try (
@@ -198,6 +197,7 @@ public class DNSServer {
                 }
             }
         } catch (IOException e) {
+            System.out.println("Error: " + e);
             // Have to catch IOexceptions for most socket calls
             System.out.println("Network error!");
         }

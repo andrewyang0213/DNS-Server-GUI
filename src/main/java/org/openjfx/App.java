@@ -29,30 +29,24 @@ public class App extends Application {
     // Create the input text fields
     TextField inputTextField = new TextField();
     // Create the submit button
-    Button startButton = new Button("Start Server");
 
     Button submitButton = new Button("Submit");
 
     // Create the output text areas
-    TextArea outputTextArea1 = new TextArea();
-    TextArea outputTextArea2 = new TextArea();
+    TextArea testResultArea = new TextArea();
     // Set the preferred width for the input text fields
 
     inputTextField.setPrefWidth(200);
     // Set the preferred width and height for the output text areas
-    outputTextArea1.setPrefWidth(200);
-    outputTextArea1.setPrefHeight(100);
-    outputTextArea2.setPrefWidth(200);
-    outputTextArea2.setPrefHeight(100);
+    testResultArea.setPrefWidth(200);
+    testResultArea.setPrefHeight(400);
     // Create a horizontal box to contain the input text fields and the submit
     // button
     HBox inputBox = new HBox(10, inputTextField, submitButton);
-    
-    VBox startBox = new VBox(10, startButton, outputTextArea1);
-    
+
     // Create a vertical box to contain the input box and the output text areas
-    VBox root = new VBox(10, startBox, inputBox, outputTextArea2);
-    
+    VBox root = new VBox(10, inputBox, testResultArea);
+
     // Create the scene
     Scene scene = new Scene(root, 450, 250);
     // Set the title of the primary stage
@@ -63,19 +57,15 @@ public class App extends Application {
     primaryStage.show();
 
     // Create PipedOutputStreams to redirect the standard output and error streams
-    PipedOutputStream pipedOutputStream1 = new PipedOutputStream();
-    PipedOutputStream pipedOutputStream2 = new PipedOutputStream();
+    PipedOutputStream outputStream = new PipedOutputStream();
     // Create PipedInputStreams to receive the redirected standard output and error
     // streams
-    PipedInputStream pipedInputStream1 = new PipedInputStream(pipedOutputStream1);
-    PipedInputStream pipedInputStream2 = new PipedInputStream(pipedOutputStream2);
+    PipedInputStream inputStream = new PipedInputStream(outputStream);
     // Redirect the standard output and error streams to the PipedOutputStreams
-    System.setOut(new PrintStream(pipedOutputStream1));
-    System.setErr(new PrintStream(pipedOutputStream2));
+    System.setOut(new PrintStream(outputStream));
     // Start the InputOutputHandler thread
-    InputOutputHandler inputOutputHandler = new InputOutputHandler(inputTextField, startButton, submitButton,
-        outputTextArea1, outputTextArea2,
-        pipedInputStream1, pipedInputStream2);
+    InputOutputHandler inputOutputHandler = new InputOutputHandler(inputTextField, submitButton,
+        testResultArea, inputStream);
     Thread inputOutputHandlerThread = new Thread(inputOutputHandler);
     inputOutputHandlerThread.start();
   }
