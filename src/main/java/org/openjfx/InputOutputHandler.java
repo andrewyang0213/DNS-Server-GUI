@@ -33,6 +33,7 @@ class InputOutputHandler implements Runnable {
             // Clear the input text fields
             inputTextField.clear();
 
+            // Start the output appender
             OutputAppender resultAppender = new OutputAppender(testResultArea);
             resultAppender.start(testInput);
 
