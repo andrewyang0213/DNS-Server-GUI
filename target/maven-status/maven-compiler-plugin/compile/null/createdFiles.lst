@@ -1,0 +1,12 @@
+org/openjfx/InputOutputHandler.class
+org/dns/DNSMessage.class
+org/openjfx/SystemInfo.class
+module-info.class
+org/openjfx/App.class
+org/dns/DNSZone.class
+org/openjfx/StartTest.class
+org/openjfx/OutputAppender.class
+org/dns/DNSServer.class
+org/dns/DNSCache.class
+org/dns/DNSRecord.class
+org/openjfx/StartDNS.class
