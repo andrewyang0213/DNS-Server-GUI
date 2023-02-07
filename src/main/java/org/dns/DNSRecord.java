@@ -1,8 +1,8 @@
 package org.dns;
 
 import java.time.Instant;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 public class DNSRecord {
 
@@ -108,6 +108,47 @@ public class DNSRecord {
     }
 
     /**
+     * utility method for both constructors to initialize all the shared fields
+     *
+     * @param name the record's name
+     * @param ttl  the record's TTL
+     * @param data the record's data
+     */
+    private void initialize(String name, int ttl, String data) {
+        // set all the instance variables for the record
+        this.name = name;
+        this.ttl = ttl;
+        this.data = data;
+        setDataLength();
+        setTimeConstructed();
+    }
+
+    private void setTimeConstructed() {
+        timeConstructed = Instant.now();
+    }
+
+    /**
+     * utility method to set the data length based on the record type
+     */
+    private void setDataLength() {
+        if (this.type_num == 1) {
+            // A records store IPv4 address (4 bytes)
+            this.data_length = 4;
+        } else if (this.type_num == 5) {
+            // CNAME records store strings; have to include the null byte also
+            this.data_length = data.length() + 1;
+        } else {
+            // any other record types aren't supported by this server
+            System.out.println("This server only handles A and CNAME records.");
+            System.exit(0);
+        }
+    }
+
+    public Instant getTimeConstructed() {
+        return timeConstructed;
+    }
+
+    /**
      * utility method to convert a class string to a class number
      *
      * @param class_str the DNS class as a String
@@ -169,47 +210,6 @@ public class DNSRecord {
             return types.get(type_num);
         }
         return String.format("%d", type_num);
-    }
-
-    /**
-     * utility method for both constructors to initialize all the shared fields
-     *
-     * @param name the record's name
-     * @param ttl  the record's TTL
-     * @param data the record's data
-     */
-    private void initialize(String name, int ttl, String data) {
-        // set all the instance variables for the record
-        this.name = name;
-        this.ttl = ttl;
-        this.data = data;
-        setDataLength();
-        setTimeConstructed();
-    }
-
-    private void setTimeConstructed() {
-        timeConstructed = Instant.now();
-    }
-
-    /**
-     * utility method to set the data length based on the record type
-     */
-    private void setDataLength() {
-        if (this.type_num == 1) {
-            // A records store IPv4 address (4 bytes)
-            this.data_length = 4;
-        } else if (this.type_num == 5) {
-            // CNAME records store strings; have to include the null byte also
-            this.data_length = data.length() + 1;
-        } else {
-            // any other record types aren't supported by this server
-            System.out.println("This server only handles A and CNAME records.");
-            System.exit(0);
-        }
-    }
-
-    public Instant getTimeConstructed() {
-        return timeConstructed;
     }
 
     /**

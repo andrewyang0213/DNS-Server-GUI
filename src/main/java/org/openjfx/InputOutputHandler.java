@@ -40,12 +40,12 @@ class InputOutputHandler implements Runnable {
         });
 
         // Continuously read data from the PipedInputStreams
-        byte[] buffer2 = new byte[1024];
+        byte[] buffer = new byte[1024];
         try {
-            while (inputStream.read(buffer2) != -1) {
+            while (inputStream.read(buffer) != -1) {
                 // Append the output to the output text areas
-                if (inputStream.read(buffer2) != -1) {
-                    testResultArea.appendText(new String(buffer2));
+                if (inputStream.read(buffer) != -1) {
+                    testResultArea.appendText(new String(buffer));
                 }
             }
         } catch (IOException e) {

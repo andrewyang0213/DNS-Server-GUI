@@ -9,9 +9,7 @@ import java.util.HashMap;
 
 public class DNSServer {
 
-    /**
-     * DNS uses port UDP port 53 for the server
-     */
+    //DNS uses port UDP port 53 for the server    
     final private int PORT = 53;
 
     /**
@@ -19,19 +17,11 @@ public class DNSServer {
      */
     final private int MAX_SIZE = 512;
 
-    /**
-     * this server will handle requests for a single zone/domain
-     */
     private DNSZone zone;
 
-    /**
-     * class variable for the cache
-     */
     private DNSCache cache;
 
-    /**
-     * class variables to track pending queries and original queries
-     */
+    //class variables to track pending queries and original queries
     private HashMap<Integer, DNSMessage> pendingQueries;
     private DNSMessage originalQuery;
 
@@ -42,7 +32,7 @@ public class DNSServer {
     private int nextServerPort;
 
     /**
-     * Required constructor that simply prints out some messages about the server.
+     * Constructor that prints out some messages about the server.
      *
      * @param zone a DNSZone object that has already been constructed
      */
@@ -63,6 +53,81 @@ public class DNSServer {
         nextServerPort = 53;
 
         System.out.printf("Starting server on port %d%n", PORT);
+    }
+
+    /**
+     * Server starting point
+     *
+     * @param args should contain a single value, the filename of the zone file
+     */
+    public static void main(String[] args) {
+        // must have exactly a single command line argument
+        if (args.length != 1) {
+            System.out.println("Usage: sudo java dns.DNSServer zone_file");
+            System.exit(0);
+        }
+
+        // make the zone, which will exit() if the file is invalid in any way
+        var zone = new DNSZone(args[0]);
+
+        // make the server object then start listening for DNS requests
+        var server = new DNSServer(zone);
+        server.run();
+    }
+
+    //Open a socket to receive UDP packets and handle those packets
+    public void run() {
+        pendingQueries = new HashMap<Integer, DNSMessage>();
+        // open the socket, ensure it will close when the try block finishes
+        try (
+                // listen on localhost only
+                var sock = new DatagramSocket(PORT, InetAddress.getLoopbackAddress());) {
+            // keep reading packets one at a time, forever
+            while (true) {
+                // packet to store the incoming message
+                var in_packet = new DatagramPacket(new byte[MAX_SIZE], MAX_SIZE);
+
+                // blocking call, read one packet
+                sock.receive(in_packet);
+
+                // handle this packet
+                var out_packet = handleMessage(in_packet);
+
+                // only send a response if there were no errors
+                if (out_packet != null) {
+                    sock.send(out_packet);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error: " + e);
+            // Have to catch IOexceptions for most socket calls
+            System.out.println("Network error!");
+        }
+    }
+
+    /**
+     * handle one DNS message
+     *
+     * @param incomingPkt the UDP packet containing the incoming DNS message
+     * @return a UDP packet containing the DNS response
+     */
+    private DatagramPacket handleMessage(DatagramPacket incomingPkt) {
+        // update the cache each time a message is received to remove any records with
+        // expired TTLs
+        cache.removeExpiredRecords();
+
+        // create a DNS Message object that will parse the request packet data
+        var incomingMessage = new DNSMessage(incomingPkt);
+
+        // handle queries
+        if (incomingMessage.isQuery()) {
+            return handleQuery(incomingMessage);
+        }
+
+        // handle replies
+        else {
+            return handleReply(incomingMessage);
+        }
     }
 
     /**
@@ -144,82 +209,5 @@ public class DNSServer {
 
         // make and return a new response packet to send to the original client
         return new DatagramPacket(reply.getData(), reply.getDataLength(), originalQuery.getPacket().getSocketAddress());
-    }
-
-    /**
-     * handle one DNS message
-     *
-     * @param incomingPkt the UDP packet containing the incoming DNS message
-     * @return a UDP packet containing the DNS response
-     */
-    private DatagramPacket handleMessage(DatagramPacket incomingPkt) {
-        // update the cache each time a message is received to remove any records with
-        // expired TTLs
-        cache.removeExpiredRecords();
-
-        // create a DNS Message object that will parse the request packet data
-        var incomingMessage = new DNSMessage(incomingPkt);
-
-        // handle queries
-        if (incomingMessage.isQuery()) {
-            return handleQuery(incomingMessage);
-        }
-
-        // handle replies
-        else {
-            return handleReply(incomingMessage);
-        }
-    }
-
-    /**
-     * Open a socket to receive UDP packets and handle those packets
-     */
-    public void run() {
-        pendingQueries = new HashMap<Integer, DNSMessage>();
-        // open the socket, ensure it will close when the try block finishes
-        try (
-                // listen on localhost only
-                var sock = new DatagramSocket(PORT, InetAddress.getLoopbackAddress());) {
-            // keep reading packets one at a time, forever
-            while (true) {
-                // packet to store the incoming message
-                var in_packet = new DatagramPacket(new byte[MAX_SIZE], MAX_SIZE);
-
-                // blocking call, read one packet
-                sock.receive(in_packet);
-
-                // handle this packet
-                var out_packet = handleMessage(in_packet);
-
-                // only send a response if there were no errors
-                if (out_packet != null) {
-                    sock.send(out_packet);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error: " + e);
-            // Have to catch IOexceptions for most socket calls
-            System.out.println("Network error!");
-        }
-    }
-
-    /**
-     * Server starting point
-     *
-     * @param args should contain a single value, the filename of the zone file
-     */
-    public static void main(String[] args) {
-        // must have exactly a single command line argument
-        if (args.length != 1) {
-            System.out.println("Usage: sudo java dns.DNSServer zone_file");
-            System.exit(0);
-        }
-
-        // make the zone, which will exit() if the file is invalid in any way
-        var zone = new DNSZone(args[0]);
-
-        // make the server object then start listening for DNS requests
-        var server = new DNSServer(zone);
-        server.run();
     }
 }
