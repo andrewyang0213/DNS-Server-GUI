@@ -11,7 +11,7 @@ public class UserInput {
     // constructor to initialize the TextField and Button
     public UserInput() {
         inputTextField = new TextField();
-        inputTextField.setPrefWidth(200);
+        inputTextField.setPrefWidth(300);
         submitButton = new Button("Submit");
     }
 
