@@ -6,53 +6,17 @@ import java.util.Map;
 
 public class DNSRecord {
 
-    /**
-     * the name stored in this record
-     */
     private String name;
-
-    /**
-     * the ttl (in seconds) for this record
-     */
     private int ttl;
-
-    /**
-     * the class code, both as number and string
-     */
     private int class_num;
     private String class_str;
-
-    /**
-     * the type, both as number and string
-     */
     private int type_num;
     private String type_str;
-
-    /**
-     * length of the data field (in bytes)
-     */
     private int data_length;
-
-    /**
-     * the data field, e.g., the IPv4 address in an A record
-     */
     private String data;
-
-    /**
-     * variable to track when this record object was stored
-     */
     private Instant timeConstructed;
-
-    /**
-     * map the various required Class numbers to their human readable names
-     */
     private static HashMap<Integer, String> classes;
-
-    /**
-     * map the various required Type numbers to their human readable names
-     */
     private static HashMap<Integer, String> types;
-
     // static initialization block to create the above maps
     static {
         classes = new HashMap<Integer, String>();
