@@ -26,14 +26,14 @@ class InputOutputHandler implements Runnable {
     @Override
     public void run() {
 
-        // Add an event handler to the submit button to handle user input
+        // Event handler for the submit button to handle user input
         submitButton.setOnAction(event -> {
             // Get the user input from the input text fields
             String testInput = inputTextField.getText();
             // Clear the input text fields
             inputTextField.clear();
 
-            var resultAppender = new OutputAppender(testResultArea);
+            OutputAppender resultAppender = new OutputAppender(testResultArea);
             resultAppender.start(testInput);
 
         });
@@ -42,7 +42,7 @@ class InputOutputHandler implements Runnable {
         byte[] buffer2 = new byte[1024];
         try {
             while (inputStream.read(buffer2) != -1) {
-                // Append the output to the respective output text areas
+                // Append the output to the output text areas
                 if (inputStream.read(buffer2) != -1) {
                     testResultArea.appendText(new String(buffer2));
                 }

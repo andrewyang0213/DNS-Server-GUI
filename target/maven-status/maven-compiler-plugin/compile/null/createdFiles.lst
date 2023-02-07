@@ -1,11 +1,11 @@
-org/openjfx/InputOutputHandler.class
 org/dns/DNSMessage.class
+org/openjfx/InputOutputHandler.class
 org/openjfx/components/OutputDisplay.class
 module-info.class
+org/dns/DNSZone.class
 org/openjfx/components/UserInput.class
 org/openjfx/App.class
-org/dns/DNSZone.class
-org/openjfx/OutputAppender.class
 org/dns/DNSServer.class
-org/dns/DNSCache.class
 org/dns/DNSRecord.class
+org/dns/DNSCache.class
+org/openjfx/OutputAppender.class
