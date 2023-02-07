@@ -2,29 +2,29 @@ package org.openjfx;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
+
+import org.openjfx.components.OutputDisplay;
+import org.openjfx.components.UserInput;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
-public class InputOutputHandler implements Runnable {
-
-    private TextField inputTextField;
-    private Button submitButton;
-    private TextArea testResultArea;
+class InputOutputHandler implements Runnable {
     private PipedInputStream inputStream;
+    private Button submitButton;
+    private TextField inputTextField;
+    private TextArea testResultArea;
 
-    public InputOutputHandler(TextField inputTextField, Button submitButton,
-            TextArea testResultArea,
-            PipedInputStream inputStream) {
-        this.inputTextField = inputTextField;
-        this.submitButton = submitButton;
-        this.testResultArea = testResultArea;
-        this.inputStream = inputStream;
+    InputOutputHandler(UserInput userInput, OutputDisplay outputDisplay) {
+        this.inputTextField = userInput.getInputTextField();
+        this.submitButton = userInput.getSubmitButton();
+        this.testResultArea = outputDisplay.getTestResultArea();
     }
 
     @Override
     public void run() {
-        
+
         // Add an event handler to the submit button to handle user input
         submitButton.setOnAction(event -> {
             // Get the user input from the input text fields

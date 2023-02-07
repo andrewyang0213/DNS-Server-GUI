@@ -1,8 +1,10 @@
 org/dns/DNSMessage.class
+org/openjfx/UserInput.class
 org/openjfx/InputOutputHandler.class
 module-info.class
 org/dns/DNSZone.class
 org/openjfx/App.class
+org/openjfx/OutputDisplay.class
 org/dns/DNSServer.class
 org/dns/DNSRecord.class
 org/dns/DNSCache.class
