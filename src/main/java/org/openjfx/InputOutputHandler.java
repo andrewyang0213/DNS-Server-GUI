@@ -16,10 +16,11 @@ class InputOutputHandler implements Runnable {
     private TextField inputTextField;
     private TextArea testResultArea;
 
-    InputOutputHandler(UserInput userInput, OutputDisplay outputDisplay) {
+    InputOutputHandler(UserInput userInput, OutputDisplay outputDisplay, PipedInputStream inputStream) {
         this.inputTextField = userInput.getInputTextField();
         this.submitButton = userInput.getSubmitButton();
         this.testResultArea = outputDisplay.getTestResultArea();
+        this.inputStream = inputStream;
     }
 
     @Override
