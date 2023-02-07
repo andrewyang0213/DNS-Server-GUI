@@ -1,4 +1,4 @@
 
-hs_err_pid41235.log
-target/classes/org/.DS_Store
-target/classes/org/dns/DNSCache.class
+.log
+.DS_Store
+.class
